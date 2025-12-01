@@ -4,7 +4,7 @@ A complete digital wedding planning platform with budget management, pledge trac
 
 ## Features
 
-### Core Functionality
+### Core Functionalities
 
 - **Multi-Tenant Architecture**: Each wedding is isolated with role-based access control
 - **User Authentication**: Secure email/password authentication with Supabase
