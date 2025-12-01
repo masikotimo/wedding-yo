@@ -67,7 +67,7 @@ export default function PledgeManagement() {
       .from('pledges')
       .select('*')
       .eq('wedding_id', wedding.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true });
 
     if (data) setPledges(data);
     setLoading(false);
