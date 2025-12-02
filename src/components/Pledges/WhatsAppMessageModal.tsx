@@ -60,8 +60,20 @@ export default function WhatsAppMessageModal({ pledges, weddingInfo, onClose }: 
     // Format wedding date
     const formattedDate = formatWeddingDate(weddingInfo.wedding_date);
     
-    // Header text
-    const header = `✨ Love-Filled Support Towards the Wedding of ${weddingInfo.groom_name} & ${weddingInfo.bride_name} – ${formattedDate} ✨\n\nWe extend our heartfelt gratitude to everyone who has shown their love and support toward this beautiful union. Below are the contributions received:\n\n`;
+    // Check if this is Tim & TODZA wedding (case-insensitive)
+    const isTimAndTodza = 
+      weddingInfo.groom_name.toLowerCase().trim() === 'tim' && 
+      weddingInfo.bride_name.toLowerCase().trim() === 'todza';
+    
+    // Build header text
+    let header = `✨ Love-Filled Support Towards the Wedding of ${weddingInfo.groom_name} & ${weddingInfo.bride_name} – ${formattedDate} ✨\n\nWe extend our heartfelt gratitude to everyone who has shown their love and support toward this beautiful union. Your kindness means the world to us.\n\n`;
+    
+    // Add payment/meeting info only for Tim & TODZA
+    if (isTimAndTodza) {
+      header += `For anyone who would like to send in their support or pledge, you may use the details below:\n\nTel: 0777 127 289\n\nStanbic Bank: 9030015097212\n(All in the names of TIMOTHY MASIKO)\n\nOur next meeting will be held on 19th December.\n\n`;
+    }
+    
+    header += `Below is the updated list of pledges received:\n\n`;
 
     if (pledges.length === 0) {
       return header + 'No pledges to display.';
