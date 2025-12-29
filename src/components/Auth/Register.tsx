@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { Heart, Calendar, Users, DollarSign } from 'lucide-react';
 import { CURRENCIES } from '../../lib/currency';
+import { trackRegistration } from '../../lib/analytics';
 
 interface RegisterProps {
   onToggleMode: () => void;
@@ -52,6 +53,9 @@ export default function Register({ onToggleMode }: RegisterProps) {
         setLoading(false);
         return;
       }
+
+      // Track successful registration with currency preference
+      trackRegistration(currency);
     }
 
     setLoading(false);

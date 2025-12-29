@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogIn } from 'lucide-react';
+import { trackLogin } from '../../lib/analytics';
 
 interface LoginProps {
   onToggleMode: () => void;
@@ -22,6 +23,9 @@ export default function Login({ onToggleMode }: LoginProps) {
 
     if (error) {
       setError(error.message);
+    } else {
+      // Track successful login
+      trackLogin();
     }
 
     setLoading(false);

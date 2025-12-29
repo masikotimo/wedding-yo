@@ -15,6 +15,7 @@ import VendorManagement from './components/Vendors/VendorManagement';
 import AgendaManagement from './components/Agenda/AgendaManagement';
 import Settings from './components/Settings/Settings';
 import AdminDashboard from './components/Admin/AdminDashboard';
+import { trackPageView, trackTabChange } from './lib/analytics';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -29,8 +30,18 @@ function AppContent() {
 
     if (path === '/pledge' || token) {
       setIsPublicPledgePage(true);
+      trackPageView('public_pledge_form', '/pledge');
+    } else {
+      trackPageView('home', '/');
     }
   }, []);
+
+  // Track page views when activeTab changes
+  useEffect(() => {
+    if (user && activeTab) {
+      trackTabChange(activeTab);
+    }
+  }, [activeTab, user]);
 
   if (isPublicPledgePage) {
     return <PublicPledgeForm />;
