@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatCurrency } from '../../lib/currency';
-import { Plus, Edit2, Trash2, DollarSign, TrendingUp, Gift } from 'lucide-react';
+import { Plus, Edit2, Trash2, Wallet, TrendingUp, Gift } from 'lucide-react';
 import CashTransactionModal from './CashTransactionModal';
 
 interface CashTransaction {
@@ -139,7 +139,7 @@ export default function CashManagement() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-green-600" />
+            <Wallet className="w-8 h-8 text-green-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Total Cash at Hand</p>
           <p className="text-2xl font-bold text-green-600">{formatAmount(getTotals())}</p>
@@ -163,7 +163,7 @@ export default function CashManagement() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-gray-600" />
+            <Wallet className="w-8 h-8 text-gray-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Other Sources</p>
           <p className="text-2xl font-bold text-gray-600">{formatAmount(getTypeTotal('other'))}</p>

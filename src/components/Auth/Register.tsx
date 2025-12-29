@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { Heart, Calendar, Users } from 'lucide-react';
+import { Heart, Calendar, Users, DollarSign } from 'lucide-react';
+import { CURRENCIES } from '../../lib/currency';
 
 interface RegisterProps {
   onToggleMode: () => void;
@@ -14,6 +15,7 @@ export default function Register({ onToggleMode }: RegisterProps) {
   const [groomName, setGroomName] = useState('');
   const [weddingDate, setWeddingDate] = useState('');
   const [expectedGuests, setExpectedGuests] = useState('100');
+  const [currency, setCurrency] = useState('UGX');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signUp } = useAuth();
@@ -42,6 +44,7 @@ export default function Register({ onToggleMode }: RegisterProps) {
           groom_name: groomName,
           wedding_date: weddingDate,
           expected_guests: parseInt(expectedGuests),
+          currency: currency,
         });
 
       if (weddingError) {
@@ -171,6 +174,25 @@ export default function Register({ onToggleMode }: RegisterProps) {
                   placeholder="100"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                <DollarSign className="w-4 h-4 inline mr-2" />
+                Currency
+              </label>
+              <select
+                id="currency"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+                {CURRENCIES.map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.symbol} - {curr.name} ({curr.code})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

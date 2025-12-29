@@ -1,8 +1,8 @@
 export const CURRENCIES = [
+  { code: 'UGX', symbol: 'UGX', name: 'Ugandan Shilling' },
   { code: 'USD', symbol: '$', name: 'US Dollar' },
   { code: 'EUR', symbol: '€', name: 'Euro' },
   { code: 'GBP', symbol: '£', name: 'British Pound' },
-  { code: 'UGX', symbol: 'UGX', name: 'Ugandan Shilling' },
   { code: 'KES', symbol: 'KES', name: 'Kenyan Shilling' },
   { code: 'TZS', symbol: 'TZS', name: 'Tanzanian Shilling' },
   { code: 'ZAR', symbol: 'R', name: 'South African Rand' },

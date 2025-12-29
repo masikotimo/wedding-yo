@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X } from 'lucide-react';
+import { formatCurrency } from '../../lib/currency';
 
 interface PledgeModalProps {
   weddingId: string;
   pledge: any | null;
   onClose: () => void;
   onSave: () => void;
+  currency: string;
 }
 
-export default function PledgeModal({ weddingId, pledge, onClose, onSave }: PledgeModalProps) {
+export default function PledgeModal({ weddingId, pledge, onClose, onSave, currency }: PledgeModalProps) {
   const [formData, setFormData] = useState({
     contributor_name: '',
     phone: '',
@@ -203,7 +205,7 @@ export default function PledgeModal({ weddingId, pledge, onClose, onSave }: Pled
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-700">Balance Remaining:</span>
               <span className="text-2xl font-bold text-orange-600">
-                ${(parseFloat(formData.amount_pledged || '0') - parseFloat(formData.amount_paid || '0')).toFixed(2)}
+                {formatCurrency(parseFloat(formData.amount_pledged || '0') - parseFloat(formData.amount_paid || '0'), currency)}
               </span>
             </div>
           </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatCurrency } from '../../lib/currency';
-import { Plus, Edit2, Trash2, DollarSign, Calendar, TrendingDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Wallet, Calendar, TrendingDown } from 'lucide-react';
 import ExpenditureModal from './ExpenditureModal';
 
 interface Expenditure {
@@ -136,7 +136,7 @@ export default function ExpenditureManagement() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-red-600" />
+            <Wallet className="w-8 h-8 text-red-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Total Expenditure</p>
           <p className="text-2xl font-bold text-red-600">{formatAmount(getTotals())}</p>

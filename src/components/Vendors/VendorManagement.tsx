@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatCurrency as formatCurrencyUtil } from '../../lib/currency';
-import { Plus, Edit2, Trash2, Phone, Mail, MapPin, Calendar, DollarSign } from 'lucide-react';
+import { Plus, Edit2, Trash2, Phone, Mail, MapPin, Calendar, Wallet } from 'lucide-react';
 import VendorModal from './VendorModal';
 
 interface Vendor {
@@ -145,7 +145,7 @@ export default function VendorManagement() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-blue-600" />
+            <Wallet className="w-8 h-8 text-blue-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Total Contracts</p>
           <p className="text-2xl font-bold text-gray-900">{formatCurrency(totals.totalContract)}</p>
@@ -153,7 +153,7 @@ export default function VendorManagement() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-green-600" />
+            <Wallet className="w-8 h-8 text-green-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Total Paid</p>
           <p className="text-2xl font-bold text-green-600">{formatCurrency(totals.totalPaid)}</p>
@@ -161,7 +161,7 @@ export default function VendorManagement() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-orange-600" />
+            <Wallet className="w-8 h-8 text-orange-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Outstanding</p>
           <p className="text-2xl font-bold text-orange-600">{formatCurrency(totals.totalBalance)}</p>
@@ -169,7 +169,7 @@ export default function VendorManagement() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-blue-600" />
+            <Wallet className="w-8 h-8 text-blue-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Payment Rate</p>
           <p className="text-2xl font-bold text-blue-600">{totals.paymentRate.toFixed(1)}%</p>

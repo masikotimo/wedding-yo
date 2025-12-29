@@ -8,7 +8,8 @@ import {
   Users,
   CreditCard,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Wallet
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -176,7 +177,7 @@ export default function DashboardOverview() {
         <StatCard
           title="Total Budget"
           value={formatAmount(stats.totalBudget)}
-          icon={DollarSign}
+          icon={Wallet}
           color="bg-blue-600"
           subtitle={`${formatAmount(stats.budgetPerGuest)} per guest`}
         />
