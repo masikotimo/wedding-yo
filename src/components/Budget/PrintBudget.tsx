@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatCurrency } from '../../lib/currency';
-import { Printer } from 'lucide-react';
+import { Printer, FileSpreadsheet } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 interface Wedding {
   bride_name: string;
@@ -93,6 +94,140 @@ export default function PrintBudget() {
     window.print();
   };
 
+  const handleExportExcel = () => {
+    if (!wedding || items.length === 0) {
+      alert('No budget data to export');
+      return;
+    }
+
+    // Prepare data for Excel
+    const excelData: any[] = [];
+
+    // Header row
+    excelData.push(['WEDDING BUDGET']);
+    excelData.push([]);
+    excelData.push([`${wedding.bride_name} & ${wedding.groom_name}`]);
+    excelData.push([
+      `Wedding Date: ${new Date(wedding.wedding_date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}`,
+    ]);
+    excelData.push([`Generated: ${new Date().toLocaleDateString()}`]);
+    excelData.push([]);
+
+    // Column headers
+    excelData.push([
+      'Classification',
+      'Item',
+      'Qty',
+      'Unit Cost',
+      'Amount',
+      'Paid',
+      'Balance/Status',
+    ]);
+
+    // Add sections and items
+    sections.forEach((section) => {
+      const sectionItems = items.filter((item) => item.section_id === section.id);
+      if (sectionItems.length === 0) return;
+
+      // Section header
+      excelData.push([section.name.toUpperCase(), '', '', '', '', '', '']);
+
+      // Section items
+      sectionItems.forEach((item) => {
+        const balanceStatus = item.balance === 0 ? '✓ Covered' : formatAmount(item.balance);
+        excelData.push([
+          '', // Empty classification column
+          item.item_name,
+          item.quantity,
+          formatAmount(item.unit_cost),
+          formatAmount(item.amount),
+          formatAmount(item.paid),
+          balanceStatus,
+        ]);
+      });
+
+      // Section totals
+      const sectionTotal = sectionItems.reduce((sum, item) => sum + Number(item.amount), 0);
+      const sectionPaid = sectionItems.reduce((sum, item) => sum + Number(item.paid), 0);
+      const sectionBalance = sectionItems.reduce((sum, item) => sum + Number(item.balance), 0);
+      const sectionBalanceStatus = sectionBalance === 0 ? '✓ Covered' : formatAmount(sectionBalance);
+
+      excelData.push([
+        'Section Total:',
+        '',
+        '',
+        '',
+        formatAmount(sectionTotal),
+        formatAmount(sectionPaid),
+        sectionBalanceStatus,
+      ]);
+      excelData.push([]); // Empty row after section
+    });
+
+    // Grand total
+    excelData.push([]);
+    excelData.push([
+      'GRAND TOTAL:',
+      '',
+      '',
+      '',
+      formatAmount(totals.total),
+      formatAmount(totals.paid),
+      totals.balance === 0 ? '✓ Fully Covered' : formatAmount(totals.balance),
+    ]);
+
+    // Create workbook and worksheet
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 20 }, // Classification
+      { wch: 30 }, // Item
+      { wch: 8 },  // Qty
+      { wch: 15 }, // Unit Cost
+      { wch: 15 }, // Amount
+      { wch: 15 }, // Paid
+      { wch: 18 }, // Balance/Status
+    ];
+
+    // Style header rows
+    for (let R = 0; R <= 5; R++) {
+      for (let C = 0; C <= 6; C++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[cellAddress]) continue;
+        ws[cellAddress].s = {
+          font: { bold: R === 0 || R === 6 },
+          alignment: { horizontal: R === 0 ? 'center' : 'left' },
+        };
+      }
+    }
+
+    // Style column headers (row 7, index 6)
+    for (let C = 0; C <= 6; C++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: 6, c: C });
+      if (ws[cellAddress]) {
+        ws[cellAddress].s = {
+          font: { bold: true },
+          fill: { fgColor: { rgb: 'E5E7EB' } },
+        };
+      }
+    }
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Wedding Budget');
+
+    // Generate filename
+    const filename = `Wedding_Budget_${wedding.bride_name}_${wedding.groom_name}_${new Date().toISOString().split('T')[0]}.xlsx`;
+
+    // Save file
+    XLSX.writeFile(wb, filename);
+  };
+
   const totals = getTotals();
 
   if (loading) {
@@ -110,13 +245,22 @@ export default function PrintBudget() {
           <h2 className="text-3xl font-bold text-gray-900">Print Budget</h2>
           <p className="text-gray-600 mt-2">Preview and print your budget</p>
         </div>
-        <button
-          onClick={handlePrint}
-          className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Printer className="w-5 h-5 mr-2" />
-          Print / Save as PDF
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={handleExportExcel}
+            className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <FileSpreadsheet className="w-5 h-5 mr-2" />
+            Export to Excel
+          </button>
+          <button
+            onClick={handlePrint}
+            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Printer className="w-5 h-5 mr-2" />
+            Print / Save as PDF
+          </button>
+        </div>
       </div>
 
       <div ref={printRef} id="print-budget-content" className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 print:shadow-none print:border-0">
@@ -181,7 +325,11 @@ export default function PrintBudget() {
                         {formatAmount(item.paid)}
                       </td>
                       <td className="py-2 px-2 text-right text-orange-700">
-                        {formatAmount(item.balance)}
+                        {item.balance === 0 ? (
+                          <span className="font-semibold text-green-700">✓ Covered</span>
+                        ) : (
+                          formatAmount(item.balance)
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -196,7 +344,11 @@ export default function PrintBudget() {
                       {formatAmount(sectionPaid)}
                     </td>
                     <td className="py-2 px-2 text-right font-bold text-orange-700">
-                      {formatAmount(sectionBalance)}
+                      {sectionBalance === 0 ? (
+                        <span className="text-green-700">✓ Covered</span>
+                      ) : (
+                        formatAmount(sectionBalance)
+                      )}
                     </td>
                   </tr>
                 </React.Fragment>
@@ -214,7 +366,11 @@ export default function PrintBudget() {
                 {formatAmount(totals.paid)}
               </td>
               <td className="py-4 px-2 text-right font-bold text-xl text-orange-700">
-                {formatAmount(totals.balance)}
+                {totals.balance === 0 ? (
+                  <span className="text-green-700">✓ Fully Covered</span>
+                ) : (
+                  formatAmount(totals.balance)
+                )}
               </td>
             </tr>
           </tbody>
